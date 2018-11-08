@@ -1,9 +1,11 @@
 package com.jhipsterpress.web.service.dto;
 
-import java.time.Instant;
-import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Objects;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * A DTO for the Calbum entity.
@@ -20,6 +22,8 @@ public class CalbumDTO implements Serializable {
     private String title;
 
     private Long communityId;
+    
+    private Long userId;
 
     public Long getId() {
         return id;
@@ -53,7 +57,15 @@ public class CalbumDTO implements Serializable {
         this.communityId = communityId;
     }
 
-    @Override
+    public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -74,13 +86,9 @@ public class CalbumDTO implements Serializable {
         return Objects.hashCode(getId());
     }
 
-    @Override
-    public String toString() {
-        return "CalbumDTO{" +
-            "id=" + getId() +
-            ", creationDate='" + getCreationDate() + "'" +
-            ", title='" + getTitle() + "'" +
-            ", community=" + getCommunityId() +
-            "}";
-    }
+	@Override
+	public String toString() {
+		return "CalbumDTO [id=" + id + ", creationDate=" + creationDate + ", title=" + title + ", communityId="
+				+ communityId + ", userId=" + userId + "]";
+	}
 }
