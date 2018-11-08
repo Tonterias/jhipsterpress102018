@@ -33,17 +33,17 @@ public class Umxm implements Serializable {
     @JoinColumn(unique = true)
     private User user;
 
-    @ManyToMany(mappedBy = "umxms")
+    @ManyToMany(mappedBy = "umxms", cascade = CascadeType.REMOVE)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JsonIgnore
     private Set<Interest> interests = new HashSet<>();
 
-    @ManyToMany(mappedBy = "umxms")
+    @ManyToMany(mappedBy = "umxms", cascade = CascadeType.REMOVE)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JsonIgnore
     private Set<Activity> activities = new HashSet<>();
 
-    @ManyToMany(mappedBy = "umxms")
+    @ManyToMany(mappedBy = "umxms", cascade = CascadeType.REMOVE)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JsonIgnore
     private Set<Celeb> celebs = new HashSet<>();

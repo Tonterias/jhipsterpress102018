@@ -1,19 +1,32 @@
 package com.jhipsterpress.web.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import javax.persistence.*;
-import javax.validation.constraints.*;
-
-import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.elasticsearch.annotations.Document;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * A Community.
@@ -55,43 +68,50 @@ public class Community implements Serializable {
     @Column(name = "is_active")
     private Boolean isActive;
 
-    @OneToMany(mappedBy = "community")
+    @OneToMany(mappedBy = "community", cascade = CascadeType.REMOVE)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Blog> blogs = new HashSet<>();
-    @OneToMany(mappedBy = "community")
+    
+    @OneToMany(mappedBy = "community", cascade = CascadeType.REMOVE)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Message> messages = new HashSet<>();
-    @OneToMany(mappedBy = "cfollowed")
+    
+    @OneToMany(mappedBy = "cfollowed", cascade = CascadeType.REMOVE)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Follow> cfolloweds = new HashSet<>();
-    @OneToMany(mappedBy = "cfollowing")
+    
+    @OneToMany(mappedBy = "cfollowing", cascade = CascadeType.REMOVE)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Follow> cfollowings = new HashSet<>();
-    @OneToMany(mappedBy = "cblockeduser")
+    
+    @OneToMany(mappedBy = "cblockeduser", cascade = CascadeType.REMOVE)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Blockuser> cblockedusers = new HashSet<>();
-    @OneToMany(mappedBy = "cblockinguser")
+    
+    @OneToMany(mappedBy = "cblockinguser", cascade = CascadeType.REMOVE)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Blockuser> cblockingusers = new HashSet<>();
+    
     @ManyToOne(optional = false)
     @NotNull
     @JsonIgnoreProperties("")
     private User user;
 
-    @OneToMany(mappedBy = "community")
+    @OneToMany(mappedBy = "community", cascade = CascadeType.REMOVE)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Calbum> calbums = new HashSet<>();
-    @ManyToMany(mappedBy = "communities")
+    
+    @ManyToMany(mappedBy = "communities", cascade = CascadeType.REMOVE)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JsonIgnore
     private Set<Interest> interests = new HashSet<>();
 
-    @ManyToMany(mappedBy = "communities")
+    @ManyToMany(mappedBy = "communities", cascade = CascadeType.REMOVE)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JsonIgnore
     private Set<Activity> activities = new HashSet<>();
 
-    @ManyToMany(mappedBy = "communities")
+    @ManyToMany(mappedBy = "communities", cascade = CascadeType.REMOVE)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JsonIgnore
     private Set<Celeb> celebs = new HashSet<>();
