@@ -11,23 +11,28 @@ import { CommunityService } from 'app/entities/community';
 import { IUmxm } from 'app/shared/model/umxm.model';
 import { UmxmService } from 'app/entities/umxm';
 
+import { Principal } from 'app/core';
+
 @Component({
     selector: 'jhi-activity-update',
     templateUrl: './activity-update.component.html'
 })
 export class ActivityUpdateComponent implements OnInit {
-    activity: IActivity;
+    private _activity: IActivity;
     isSaving: boolean;
 
     communities: ICommunity[];
 
     umxms: IUmxm[];
 
+    currentAccount: any;
+
     constructor(
         private jhiAlertService: JhiAlertService,
         private activityService: ActivityService,
         private communityService: CommunityService,
         private umxmService: UmxmService,
+        private principal: Principal,
         private activatedRoute: ActivatedRoute
     ) {}
 
@@ -36,18 +41,11 @@ export class ActivityUpdateComponent implements OnInit {
         this.activatedRoute.data.subscribe(({ activity }) => {
             this.activity = activity;
         });
-        this.communityService.query().subscribe(
-            (res: HttpResponse<ICommunity[]>) => {
-                this.communities = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
-        this.umxmService.query().subscribe(
-            (res: HttpResponse<IUmxm[]>) => {
-                this.umxms = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
+        this.principal.identity().then(account => {
+            this.currentAccount = account;
+            this.myCommunitiesActivities(this.currentAccount);
+            this.myUserActivities(this.currentAccount);
+        });
     }
 
     previousState() {
@@ -76,6 +74,35 @@ export class ActivityUpdateComponent implements OnInit {
         this.isSaving = false;
     }
 
+    private myUserActivities(currentAccount) {
+        const query = {};
+        if (this.currentAccount.id != null) {
+            query['userId.equals'] = this.currentAccount.id;
+        }
+        this.umxmService.query(query).subscribe(
+            (res: HttpResponse<IUmxm[]>) => {
+                this.umxms = res.body;
+                console.log('CONSOLOG: M:myProfiles & O: res.body : ', res.body);
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+    }
+
+    private myCommunitiesActivities(currentAccount) {
+        const query = {};
+        if (this.currentAccount.id != null) {
+            query['userId.equals'] = this.currentAccount.id;
+        }
+        this.communityService.query(query).subscribe(
+            (res: HttpResponse<ICommunity[]>) => {
+                this.communities = res.body;
+                console.log('CONSOLOG: M:myCommunities & O: res.body : ', res.body);
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+        console.log('CONSOLOG: M:myCommunities & O: this.currentAccount.id : ', this.currentAccount.id);
+    }
+
     private onError(errorMessage: string) {
         this.jhiAlertService.error(errorMessage, null, null);
     }
@@ -97,5 +124,13 @@ export class ActivityUpdateComponent implements OnInit {
             }
         }
         return option;
+    }
+
+    get activity() {
+        return this._activity;
+    }
+
+    set activity(activity: IActivity) {
+        this._activity = activity;
     }
 }
