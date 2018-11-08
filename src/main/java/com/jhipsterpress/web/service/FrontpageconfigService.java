@@ -1,7 +1,7 @@
 package com.jhipsterpress.web.service;
 
 import com.jhipsterpress.web.service.dto.FrontpageconfigDTO;
-
+import com.jhipsterpress.web.service.dto.CustomFrontpageconfigDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -37,6 +37,14 @@ public interface FrontpageconfigService {
      */
     Optional<FrontpageconfigDTO> findOne(Long id);
 
+    /**
+     * Get the "id" frontpageconfig, including posts.
+     *
+     * @param id the id of the entity
+     * @return the entity
+     */
+    Optional<CustomFrontpageconfigDTO> findOneIncludingPosts(Long id);
+    
     /**
      * Delete the "id" frontpageconfig.
      *
