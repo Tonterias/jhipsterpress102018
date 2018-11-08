@@ -1,0 +1,25 @@
+{
+    "jhipsterpressApp": {
+        "umxm": {
+            "home": {
+                "title": "Umxms",
+                "createLabel": "Create a new Umxm",
+                "createOrEditLabel": "Create or edit a Umxm",
+                "search": "Search for Umxm"
+            },
+            "created": "A new Umxm is created with identifier {{ param }}",
+            "updated": "A Umxm is updated with identifier {{ param }}",
+            "deleted": "A Umxm is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Umxm {{ id }}?"
+            },
+            "detail": {
+                "title": "Umxm"
+            },
+            "user": "User",
+            "interest": "Interest",
+            "activity": "Activity",
+            "celeb": "Celeb"
+        }
+    }
+}
