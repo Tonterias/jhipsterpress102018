@@ -5,10 +5,15 @@ import { Subscription } from 'rxjs';
 import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
 
 import { IInterest } from 'app/shared/model/interest.model';
-import { Principal } from 'app/core';
-
-import { ITEMS_PER_PAGE } from 'app/shared';
 import { InterestService } from './interest.service';
+
+import { ICommunity } from 'app/shared/model/community.model';
+import { CommunityService } from '../community/community.service';
+import { IUmxm } from 'app/shared/model/umxm.model';
+import { UmxmService } from '../umxm/umxm.service';
+
+import { Principal } from 'app/core';
+import { ITEMS_PER_PAGE } from 'app/shared';
 
 @Component({
     selector: 'jhi-interest',
@@ -17,6 +22,8 @@ import { InterestService } from './interest.service';
 export class InterestComponent implements OnInit, OnDestroy {
     currentAccount: any;
     interests: IInterest[];
+    communities: ICommunity[];
+    umxms: IUmxm[];
     error: any;
     success: any;
     eventSubscriber: Subscription;
@@ -30,9 +37,15 @@ export class InterestComponent implements OnInit, OnDestroy {
     predicate: any;
     previousPage: any;
     reverse: any;
+    owner: any;
+    isAdmin: boolean;
+    arrayAux = [];
+    arrayIds = [];
 
     constructor(
         private interestService: InterestService,
+        private communityService: CommunityService,
+        private umxmService: UmxmService,
         private parseLinks: JhiParseLinks,
         private jhiAlertService: JhiAlertService,
         private principal: Principal,
@@ -133,8 +146,97 @@ export class InterestComponent implements OnInit, OnDestroy {
         this.loadAll();
         this.principal.identity().then(account => {
             this.currentAccount = account;
+            this.owner = account.id;
+            this.principal.hasAnyAuthority(['ROLE_ADMIN']).then(result => {
+                this.isAdmin = result;
+            });
         });
         this.registerChangeInInterests();
+    }
+
+    myInterests() {
+        const query = {};
+        if (this.currentAccount.id != null) {
+            query['userId.equals'] = this.currentAccount.id;
+        }
+        this.communityService.query(query).subscribe(
+            (res: HttpResponse<ICommunity[]>) => {
+                this.communities = res.body;
+                console.log('CONSOLOG: M:myInterests & O: this.communities : ', this.communities);
+                this.communitiesInterests();
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+    }
+
+    private communitiesInterests() {
+        const query = {};
+        if (this.communities != null) {
+            const arrayCommmunities = [];
+            this.communities.forEach(community => {
+                arrayCommmunities.push(community.id);
+            });
+            query['communityId.in'] = arrayCommmunities;
+        }
+        this.interestService.query(query).subscribe(
+            (res: HttpResponse<IInterest[]>) => {
+                this.interests = res.body;
+                console.log('CONSOLOG: M:communitiesInterests & O: this.interests : ', this.interests);
+                this.myUserUmxm();
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+    }
+
+    private myUserUmxm() {
+        const query = {};
+        if (this.currentAccount.id != null) {
+            query['userId.equals'] = this.currentAccount.id;
+        }
+        this.umxmService.query(query).subscribe(
+            (res: HttpResponse<IUmxm[]>) => {
+                this.umxms = res.body;
+                console.log('CONSOLOG: M:myUserUmxm & O: this.umxms : ', this.umxms);
+                this.myUmxmInterests();
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+    }
+
+    private myUmxmInterests() {
+        const query = {};
+        if (this.umxms != null) {
+            const arrayUmxms = [];
+            this.umxms.forEach(umxms => {
+                arrayUmxms.push(umxms.id);
+            });
+            query['umxmId.in'] = arrayUmxms;
+        }
+        this.interestService.query(query).subscribe(
+            (res: HttpResponse<IInterest[]>) => {
+                //                        this.activities = this.activities.concat(res.body);
+                this.interests = this.filterActivities(this.interests.concat(res.body));
+                console.log('CONSOLOG: M:myUmxmInterests & O: this.interests : ', this.interests);
+                this.paginateInterests(this.interests, res.headers);
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+    }
+
+    private filterActivities(activities) {
+        this.arrayAux = [];
+        this.arrayIds = [];
+        activities.map(x => {
+            if (this.arrayIds.length >= 1 && this.arrayIds.includes(x.id) === false) {
+                this.arrayAux.push(x);
+                this.arrayIds.push(x.id);
+            } else if (this.arrayIds.length === 0) {
+                this.arrayAux.push(x);
+                this.arrayIds.push(x.id);
+            }
+        });
+        console.log('CONSOLOG: M:filterActivities & O: filterInterests', this.arrayIds, this.arrayAux);
+        return this.arrayAux;
     }
 
     ngOnDestroy() {
@@ -162,6 +264,9 @@ export class InterestComponent implements OnInit, OnDestroy {
         this.totalItems = parseInt(headers.get('X-Total-Count'), 10);
         this.queryCount = this.totalItems;
         this.interests = data;
+        console.log('CONSOLOG: M:paginateInterests & O: this.interests : ', this.interests);
+        console.log('CONSOLOG: M:paginateInterests & O: this.owner : ', this.owner);
+        console.log('CONSOLOG: M:paginateInterests & O: this.isAdmin : ', this.isAdmin);
     }
 
     private onError(errorMessage: string) {

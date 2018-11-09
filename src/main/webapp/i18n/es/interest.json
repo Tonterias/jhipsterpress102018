@@ -4,6 +4,7 @@
             "home": {
                 "title": "Interests",
                 "createLabel": "Crear nuevo Interest",
+                "myLabel": "My Interests",
                 "createOrEditLabel": "Crear o editar Interest",
                 "search": "Search for Interest"
             },
