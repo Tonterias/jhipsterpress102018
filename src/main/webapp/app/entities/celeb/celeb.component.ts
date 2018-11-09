@@ -5,10 +5,15 @@ import { Subscription } from 'rxjs';
 import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
 
 import { ICeleb } from 'app/shared/model/celeb.model';
-import { Principal } from 'app/core';
-
-import { ITEMS_PER_PAGE } from 'app/shared';
 import { CelebService } from './celeb.service';
+
+import { ICommunity } from 'app/shared/model/community.model';
+import { CommunityService } from '../community/community.service';
+import { IUmxm } from 'app/shared/model/umxm.model';
+import { UmxmService } from '../umxm/umxm.service';
+
+import { Principal } from 'app/core';
+import { ITEMS_PER_PAGE } from 'app/shared';
 
 @Component({
     selector: 'jhi-celeb',
@@ -17,6 +22,8 @@ import { CelebService } from './celeb.service';
 export class CelebComponent implements OnInit, OnDestroy {
     currentAccount: any;
     celebs: ICeleb[];
+    communities: ICommunity[];
+    umxms: IUmxm[];
     error: any;
     success: any;
     eventSubscriber: Subscription;
@@ -30,9 +37,15 @@ export class CelebComponent implements OnInit, OnDestroy {
     predicate: any;
     previousPage: any;
     reverse: any;
+    owner: any;
+    isAdmin: boolean;
+    arrayAux = [];
+    arrayIds = [];
 
     constructor(
         private celebService: CelebService,
+        private communityService: CommunityService,
+        private umxmService: UmxmService,
         private parseLinks: JhiParseLinks,
         private jhiAlertService: JhiAlertService,
         private principal: Principal,
@@ -133,8 +146,97 @@ export class CelebComponent implements OnInit, OnDestroy {
         this.loadAll();
         this.principal.identity().then(account => {
             this.currentAccount = account;
+            this.owner = account.id;
+            this.principal.hasAnyAuthority(['ROLE_ADMIN']).then(result => {
+                this.isAdmin = result;
+            });
         });
         this.registerChangeInCelebs();
+    }
+
+    myCelebs() {
+        const query = {};
+        if (this.currentAccount.id != null) {
+            query['userId.equals'] = this.currentAccount.id;
+        }
+        this.communityService.query(query).subscribe(
+            (res: HttpResponse<ICommunity[]>) => {
+                this.communities = res.body;
+                console.log('CONSOLOG: M:myActivities & O: this.communities : ', this.communities);
+                this.communitiesCelebs();
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+    }
+
+    private communitiesCelebs() {
+        const query = {};
+        if (this.communities != null) {
+            const arrayCommmunities = [];
+            this.communities.forEach(community => {
+                arrayCommmunities.push(community.id);
+            });
+            query['communityId.in'] = arrayCommmunities;
+        }
+        this.celebService.query(query).subscribe(
+            (res: HttpResponse<ICeleb[]>) => {
+                this.celebs = res.body;
+                console.log('CONSOLOG: M:communitiesActivities & O: this.celebs : ', this.celebs);
+                this.myUserUmxm();
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+    }
+
+    private myUserUmxm() {
+        const query = {};
+        if (this.currentAccount.id != null) {
+            query['userId.equals'] = this.currentAccount.id;
+        }
+        this.umxmService.query(query).subscribe(
+            (res: HttpResponse<IUmxm[]>) => {
+                this.umxms = res.body;
+                console.log('CONSOLOG: M:myUserUmxm & O: this.umxms : ', this.umxms);
+                this.myUmxmCelebs();
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+    }
+
+    private myUmxmCelebs() {
+        const query = {};
+        if (this.umxms != null) {
+            const arrayUmxms = [];
+            this.umxms.forEach(umxms => {
+                arrayUmxms.push(umxms.id);
+            });
+            query['umxmId.in'] = arrayUmxms;
+        }
+        this.celebService.query(query).subscribe(
+            (res: HttpResponse<ICeleb[]>) => {
+                //                        this.activities = this.activities.concat(res.body);
+                this.celebs = this.filterActivities(this.celebs.concat(res.body));
+                console.log('CONSOLOG: M:myUmxmActivities & O: this.celebs : ', this.celebs);
+                this.paginateCelebs(this.celebs, res.headers);
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+    }
+
+    private filterActivities(activities) {
+        this.arrayAux = [];
+        this.arrayIds = [];
+        activities.map(x => {
+            if (this.arrayIds.length >= 1 && this.arrayIds.includes(x.id) === false) {
+                this.arrayAux.push(x);
+                this.arrayIds.push(x.id);
+            } else if (this.arrayIds.length === 0) {
+                this.arrayAux.push(x);
+                this.arrayIds.push(x.id);
+            }
+        });
+        console.log('CONSOLOG: M:filterActivities & O: filterInterests', this.arrayIds, this.arrayAux);
+        return this.arrayAux;
     }
 
     ngOnDestroy() {
@@ -162,6 +264,9 @@ export class CelebComponent implements OnInit, OnDestroy {
         this.totalItems = parseInt(headers.get('X-Total-Count'), 10);
         this.queryCount = this.totalItems;
         this.celebs = data;
+        console.log('CONSOLOG: M:paginateActivities & O: this.celebs : ', this.celebs);
+        console.log('CONSOLOG: M:paginateActivities & O: this.owner : ', this.owner);
+        console.log('CONSOLOG: M:paginateActivities & O: this.isAdmin : ', this.isAdmin);
     }
 
     private onError(errorMessage: string) {

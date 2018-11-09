@@ -154,11 +154,7 @@ export class ActivityComponent implements OnInit, OnDestroy {
     }
 
     myActivities() {
-        const query = {
-            page: this.page - 1,
-            size: this.itemsPerPage,
-            sort: this.sort()
-        };
+        const query = {};
         if (this.currentAccount.id != null) {
             query['userId.equals'] = this.currentAccount.id;
         }
@@ -170,15 +166,10 @@ export class ActivityComponent implements OnInit, OnDestroy {
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
-        //        this.myProfiles();
     }
 
     private communitiesActivities() {
-        const query = {
-            //                page: this.page - 1,
-            //                size: this.itemsPerPage,
-            //                sort: this.sort()
-        };
+        const query = {};
         if (this.communities != null) {
             const arrayCommmunities = [];
             this.communities.forEach(community => {
@@ -197,11 +188,7 @@ export class ActivityComponent implements OnInit, OnDestroy {
     }
 
     private myUserUmxm() {
-        const query = {
-            //                page: this.page - 1,
-            //                size: this.itemsPerPage,
-            //                sort: this.sort()
-        };
+        const query = {};
         if (this.currentAccount.id != null) {
             query['userId.equals'] = this.currentAccount.id;
         }
@@ -216,11 +203,7 @@ export class ActivityComponent implements OnInit, OnDestroy {
     }
 
     private myUmxmActivities() {
-        const query = {
-            //                page: this.page - 1,
-            //                size: this.itemsPerPage,
-            //                sort: this.sort()
-        };
+        const query = {};
         if (this.umxms != null) {
             const arrayUmxms = [];
             this.umxms.forEach(umxms => {

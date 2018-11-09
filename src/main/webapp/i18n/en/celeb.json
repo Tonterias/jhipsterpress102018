@@ -5,6 +5,7 @@
                 "title": "Celebs",
                 "createLabel": "Create a new Celeb",
                 "createOrEditLabel": "Create or edit a Celeb",
+                "myLabel": "Mi Celebs",
                 "search": "Search for Celeb"
             },
             "created": "A new Celeb is created with identifier {{ param }}",

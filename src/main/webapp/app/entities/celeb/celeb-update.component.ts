@@ -10,24 +10,28 @@ import { ICommunity } from 'app/shared/model/community.model';
 import { CommunityService } from 'app/entities/community';
 import { IUmxm } from 'app/shared/model/umxm.model';
 import { UmxmService } from 'app/entities/umxm';
+import { Principal } from 'app/core';
 
 @Component({
     selector: 'jhi-celeb-update',
     templateUrl: './celeb-update.component.html'
 })
 export class CelebUpdateComponent implements OnInit {
-    celeb: ICeleb;
+    private _celeb: ICeleb;
     isSaving: boolean;
 
     communities: ICommunity[];
 
     umxms: IUmxm[];
 
+    currentAccount: any;
+
     constructor(
         private jhiAlertService: JhiAlertService,
         private celebService: CelebService,
         private communityService: CommunityService,
         private umxmService: UmxmService,
+        private principal: Principal,
         private activatedRoute: ActivatedRoute
     ) {}
 
@@ -36,18 +40,11 @@ export class CelebUpdateComponent implements OnInit {
         this.activatedRoute.data.subscribe(({ celeb }) => {
             this.celeb = celeb;
         });
-        this.communityService.query().subscribe(
-            (res: HttpResponse<ICommunity[]>) => {
-                this.communities = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
-        this.umxmService.query().subscribe(
-            (res: HttpResponse<IUmxm[]>) => {
-                this.umxms = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
+        this.principal.identity().then(account => {
+            this.currentAccount = account;
+            this.myCommunitiesCelebs(this.currentAccount);
+            this.myUserCelebs(this.currentAccount);
+        });
     }
 
     previousState() {
@@ -61,6 +58,35 @@ export class CelebUpdateComponent implements OnInit {
         } else {
             this.subscribeToSaveResponse(this.celebService.create(this.celeb));
         }
+    }
+
+    private myUserCelebs(currentAccount) {
+        const query = {};
+        if (this.currentAccount.id != null) {
+            query['userId.equals'] = this.currentAccount.id;
+        }
+        this.umxmService.query(query).subscribe(
+            (res: HttpResponse<IUmxm[]>) => {
+                this.umxms = res.body;
+                console.log('CONSOLOG: M:myUserCelebs & O: res.body : ', res.body);
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+    }
+
+    private myCommunitiesCelebs(currentAccount) {
+        const query = {};
+        if (this.currentAccount.id != null) {
+            query['userId.equals'] = this.currentAccount.id;
+        }
+        this.communityService.query(query).subscribe(
+            (res: HttpResponse<ICommunity[]>) => {
+                this.communities = res.body;
+                console.log('CONSOLOG: M:myCommunities & O: res.body : ', res.body);
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+        console.log('CONSOLOG: M:myCommunities & O: this.currentAccount.id : ', this.currentAccount.id);
     }
 
     private subscribeToSaveResponse(result: Observable<HttpResponse<ICeleb>>) {
@@ -97,5 +123,13 @@ export class CelebUpdateComponent implements OnInit {
             }
         }
         return option;
+    }
+
+    get celeb() {
+        return this._celeb;
+    }
+
+    set celeb(celeb: ICeleb) {
+        this._celeb = celeb;
     }
 }
