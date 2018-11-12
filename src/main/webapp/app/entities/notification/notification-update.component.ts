@@ -15,7 +15,7 @@ import { IUser, UserService } from 'app/core';
     templateUrl: './notification-update.component.html'
 })
 export class NotificationUpdateComponent implements OnInit {
-    notification: INotification;
+    private _notification: INotification;
     isSaving: boolean;
 
     users: IUser[];
@@ -54,8 +54,10 @@ export class NotificationUpdateComponent implements OnInit {
         this.notification.creationDate = this.creationDate != null ? moment(this.creationDate, DATE_TIME_FORMAT) : null;
         this.notification.notificationDate = this.notificationDate != null ? moment(this.notificationDate, DATE_TIME_FORMAT) : null;
         if (this.notification.id !== undefined) {
+            console.log('CONSOLOG: M:save.update & O: this.notification : ', this.notification);
             this.subscribeToSaveResponse(this.notificationService.update(this.notification));
         } else {
+            this.subscribeToSaveResponse(this.notificationService.create(this.notification));
             this.subscribeToSaveResponse(this.notificationService.create(this.notification));
         }
     }
@@ -79,5 +81,15 @@ export class NotificationUpdateComponent implements OnInit {
 
     trackUserById(index: number, item: IUser) {
         return item.id;
+    }
+
+    get notification() {
+        return this._notification;
+    }
+
+    set notification(notification: INotification) {
+        this._notification = notification;
+        this.creationDate = moment(notification.creationDate).format(DATE_TIME_FORMAT);
+        this.notificationDate = moment(notification.notificationDate).format(DATE_TIME_FORMAT);
     }
 }
