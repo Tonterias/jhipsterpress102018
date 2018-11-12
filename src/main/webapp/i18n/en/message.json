@@ -5,6 +5,7 @@
                 "title": "Messages",
                 "createLabel": "Create a new Message",
                 "createOrEditLabel": "Create or edit a Message",
+                "myLabel": "My Message",
                 "search": "Search for Message"
             },
             "created": "A new Message is created with identifier {{ param }}",
