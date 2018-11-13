@@ -5,6 +5,7 @@
                 "title": "Posts",
                 "createLabel": "Create a new Post",
                 "createOrEditLabel": "Create or edit a Post",
+                "myLabel": "My Posts",
                 "search": "Search for Post"
             },
             "created": "A new Post is created with identifier {{ param }}",
