@@ -5,6 +5,7 @@
                 "title": "Blockusers",
                 "createLabel": "Create a new Blockuser",
                 "createOrEditLabel": "Create or edit a Blockuser",
+                "myLabel": "Mi Blockuser",
                 "search": "Search for Blockuser"
             },
             "created": "A new Blockuser is created with identifier {{ param }}",

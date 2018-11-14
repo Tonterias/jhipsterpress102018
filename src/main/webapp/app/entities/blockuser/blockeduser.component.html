@@ -1,16 +1,19 @@
 <div>
     <h2 id="page-heading">
-        <span jhiTranslate="jhipsterpressApp.blockuser.home.title">Blockusers</span>
+        <span jhiTranslate="jhipsterpressApp.blockeduser.home.title">Blockusers</span>
         <!--
         <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-blockuser" [routerLink]="['/blockuser/new']">
             <fa-icon [icon]="'plus'"></fa-icon>
-            <span class="hidden-sm-down"  jhiTranslate="jhipsterpressApp.blockuser.home.createLabel">
+            <span  jhiTranslate="jhipsterpressApp.blockuser.home.createLabel">
             Create new Blockuser
             </span>
         </button>
-         -->
+        -->
+    </h2>
+    <jhi-alert></jhi-alert>
+    <br/>
 
-   	<!-- Profile Content -->
+    <!-- Profile Content -->
 	<div class="col-lg-9" *ngIf="blockusers?.length; else zipZeroResults"> 
 	  <!-- User Contacts -->
 	  <div class="row g-mb-40">
@@ -29,11 +32,11 @@
 	
 	          <!-- Figure Info -->
 
-			  <a *ngIf="blockuser.cblockeduserId" [routerLink]="['/community', blockuser.cblockeduserId, 'view' ]">
+			  <a *ngIf="blockuser.cblockeduserImage" [routerLink]="['/community', blockuser.cblockeduserId, 'view' ]">
 	          	<h4 class="h5 g-mb-5">{{blockuser.cblockeduserCommunityname}}</h4>
 	          </a>
-	          <a *ngIf="blockuser.blockeduserId" [routerLink]="['/profile', blockuser.blockeduserId, 'view' ]">
-	          	<h4 class="h5 g-mb-5">{{blockuser.blockeduserFirstName}} {{blockuser.blockeduserLastName}}</h4>
+	          <a *ngIf="blockuser.blockeduserImage" [routerLink]="['/profile', blockuser.blockeduserId, 'view' ]">
+	          	<h4 class="h5 g-mb-5">{{blockuser.blockeduserUserFirstName}} {{blockuser.blockeduserUserLastName}}</h4>
 	          </a>
 	          
 	          <!--
@@ -76,7 +79,8 @@
 	  <h2 id="page-heading">Nought, nil, nada, nothing, zero, zilch, zip...</h2>
 	</ng-template>
 	<!-- End Profile Content -->
-	
+
+
     <div *ngIf="blockusers && blockusers.length">
         <div class="row justify-content-center">
             <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
