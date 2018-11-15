@@ -19,6 +19,7 @@ export class UprofileUpdateComponent implements OnInit {
     isSaving: boolean;
 
     users: IUser[];
+    user: IUser;
     creationDate: string;
     birthdate: string;
 
@@ -37,13 +38,14 @@ export class UprofileUpdateComponent implements OnInit {
             this.uprofile = uprofile;
             this.creationDate = this.uprofile.creationDate != null ? this.uprofile.creationDate.format(DATE_TIME_FORMAT) : null;
             this.birthdate = this.uprofile.birthdate != null ? this.uprofile.birthdate.format(DATE_TIME_FORMAT) : null;
+            this.userService.findById(this.uprofile.id).subscribe(
+                (res: HttpResponse<IUser>) => {
+                    this.user = res.body;
+                    console.log('CONSOLOG: M:ngOnInit & O: this.user : ', this.user);
+                },
+                (res: HttpErrorResponse) => this.onError(res.message)
+            );
         });
-        this.userService.query().subscribe(
-            (res: HttpResponse<IUser[]>) => {
-                this.users = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
     }
 
     byteSize(field) {

@@ -3,6 +3,7 @@ package com.jhipsterpress.web.service.dto;
 import java.time.Instant;
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Objects;
 import javax.persistence.Lob;
 import com.jhipsterpress.web.domain.enumeration.Gender;
@@ -73,6 +74,10 @@ public class UprofileDTO implements Serializable {
     private Boolean pet;
 
     private Long userId;
+    
+    private String userFirstName;
+    
+    private String userLastName;
 
     public Long getId() {
         return id;
@@ -249,8 +254,24 @@ public class UprofileDTO implements Serializable {
     public void setUserId(Long userId) {
         this.userId = userId;
     }
+    
+    public String getUserFirstName() {
+		return userFirstName;
+	}
 
-    @Override
+	public void setUserFirstName(String userFirstName) {
+		this.userFirstName = userFirstName;
+	}
+
+	public String getUserLastName() {
+		return userLastName;
+	}
+
+	public void setUserLastName(String userLastName) {
+		this.userLastName = userLastName;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -271,30 +292,14 @@ public class UprofileDTO implements Serializable {
         return Objects.hashCode(getId());
     }
 
-    @Override
-    public String toString() {
-        return "UprofileDTO{" +
-            "id=" + getId() +
-            ", creationDate='" + getCreationDate() + "'" +
-            ", image='" + getImage() + "'" +
-            ", gender='" + getGender() + "'" +
-            ", phone='" + getPhone() + "'" +
-            ", bio='" + getBio() + "'" +
-            ", birthdate='" + getBirthdate() + "'" +
-            ", civilStatus='" + getCivilStatus() + "'" +
-            ", lookingFor='" + getLookingFor() + "'" +
-            ", purpose='" + getPurpose() + "'" +
-            ", physical='" + getPhysical() + "'" +
-            ", religion='" + getReligion() + "'" +
-            ", ethnicGroup='" + getEthnicGroup() + "'" +
-            ", studies='" + getStudies() + "'" +
-            ", sibblings=" + getSibblings() +
-            ", eyes='" + getEyes() + "'" +
-            ", smoker='" + getSmoker() + "'" +
-            ", children='" + getChildren() + "'" +
-            ", futureChildren='" + getFutureChildren() + "'" +
-            ", pet='" + isPet() + "'" +
-            ", user=" + getUserId() +
-            "}";
-    }
+	@Override
+	public String toString() {
+		return "UprofileDTO [id=" + id + ", creationDate=" + creationDate + ", image=" + Arrays.toString(image)
+				+ ", imageContentType=" + imageContentType + ", gender=" + gender + ", phone=" + phone + ", bio=" + bio
+				+ ", birthdate=" + birthdate + ", civilStatus=" + civilStatus + ", lookingFor=" + lookingFor
+				+ ", purpose=" + purpose + ", physical=" + physical + ", religion=" + religion + ", ethnicGroup="
+				+ ethnicGroup + ", studies=" + studies + ", sibblings=" + sibblings + ", eyes=" + eyes + ", smoker="
+				+ smoker + ", children=" + children + ", futureChildren=" + futureChildren + ", pet=" + pet
+				+ ", userId=" + userId + ", userFirstName=" + userFirstName + ", userLastName=" + userLastName + "]";
+	}
 }
