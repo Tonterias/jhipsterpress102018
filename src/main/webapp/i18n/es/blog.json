@@ -4,6 +4,7 @@
             "home": {
                 "title": "Blogs",
                 "createLabel": "Crear nuevo Blog",
+                "myLabel": "Mi Blog",
                 "createOrEditLabel": "Crear o editar Blog",
                 "search": "Search for Blog"
             },
@@ -14,7 +15,8 @@
                 "question": "¿Seguro que quiere eliminar Blog {{ id }}?"
             },
             "detail": {
-                "title": "Blog"
+                "title": "Blog",
+                "blogposts": "Posts del Blog"
             },
             "creationDate": "Creation Date",
             "title": "Title",
