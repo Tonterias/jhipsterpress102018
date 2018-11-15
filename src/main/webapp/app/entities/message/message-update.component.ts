@@ -27,19 +27,17 @@ export class MessageUpdateComponent implements OnInit {
     isSaving: boolean;
 
     users: IUser[];
+    user: IUser;
 
     communities: ICommunity[];
     creationDate: string;
 
     follows: IFollow[];
-    //    loggedProfile: IProfile[];
-    loggedUser: IUser[];
+    loggedUser: IUser;
     blockusers: IBlockuser[];
 
     currentAccount: any;
     isBlocked: boolean;
-    //    loggedProfileId: number;
-    loggedUserId: number;
 
     routeData: any;
     nameParamFollows: any;
@@ -58,7 +56,14 @@ export class MessageUpdateComponent implements OnInit {
         private blockuserService: BlockuserService,
         private principal: Principal,
         private activatedRoute: ActivatedRoute
-    ) {}
+    ) {
+        this.activatedRoute.queryParams.subscribe(params => {
+            if (params.userIdEquals != null) {
+                this.nameParamFollows = 'userId';
+                this.valueParamFollows = params.userIdEquals;
+            }
+        });
+    }
 
     ngOnInit() {
         this.isSaving = false;
@@ -68,23 +73,10 @@ export class MessageUpdateComponent implements OnInit {
         });
         this.principal.identity().then(account => {
             this.currentAccount = account;
-            //            console.log('CONSOLOG: M:ngOnInit & O: this.currentAccount : ',  this.currentAccount);
-            //            console.log('CONSOLOG: M:ngOnInit & O: this.owner : ',  this.owner);
+            console.log('CONSOLOG: M:ngOnInit & O: this.currentAccount : ', this.currentAccount);
             this.myMessagesCommunities();
             this.currentLoggedUser();
         });
-        //        this.userService.query().subscribe(
-        //            (res: HttpResponse<IUser[]>) => {
-        //                this.users = res.body;
-        //            },
-        //            (res: HttpErrorResponse) => this.onError(res.message)
-        //        );
-        //        this.communityService.query().subscribe(
-        //            (res: HttpResponse<ICommunity[]>) => {
-        //                this.communities = res.body;
-        //            },
-        //            (res: HttpErrorResponse) => this.onError(res.message)
-        //        );
     }
 
     previousState() {
@@ -148,17 +140,22 @@ export class MessageUpdateComponent implements OnInit {
         );
     }
 
+    private myUser() {
+        //        this.userService.findById(this.valueParamFollows).subscribe(
+        this.userService.findById(4).subscribe(
+            (res: HttpResponse<IUser>) => {
+                this.user = res.body;
+                console.log('CONSOLOG: M:ngOnInit & O: this.user : ', this.user);
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+    }
+
     private currentLoggedUser() {
-        const query = {};
-        if (this.currentAccount.id != null) {
-            query['userId.equals'] = this.currentAccount.id;
-        }
-        this.userService.query(query).subscribe(
-            (res: HttpResponse<IUser[]>) => {
+        this.userService.findById(this.currentAccount.id).subscribe(
+            (res: HttpResponse<IUser>) => {
                 this.loggedUser = res.body;
-                this.loggedUser.forEach(user => {
-                    this.loggedUserId = user.id;
-                });
+                console.log('CONSOLOG: M:ngOnInit & O: this.user : ', this.loggedUser);
                 this.isBlockUser().subscribe(
                     (res3: HttpResponse<IBlockuser[]>) => {
                         this.blockusers = res3.body;
@@ -169,6 +166,8 @@ export class MessageUpdateComponent implements OnInit {
                             this.onWarning('BLOCKED BY USER');
                             console.log('CONSOLOG: M:currentLoggedProfile & O:  this.isBlocked : ', this.isBlocked);
                             return this.blockusers[0];
+                        } else {
+                            this.myUser();
                         }
                     },
                     (res3: HttpErrorResponse) => this.onError(res3.message)
@@ -182,8 +181,9 @@ export class MessageUpdateComponent implements OnInit {
         this.isBlocked = false;
         const query = {};
         if (this.currentAccount.id != null) {
-            query['blockeduserId.in'] = this.loggedUserId;
-            query['blockinguserId.in'] = Number(this.valueParamFollows);
+            query['blockeduserId.in'] = this.loggedUser.id;
+            //            query['blockinguserId.in'] = Number(this.valueParamFollows);
+            query['blockinguserId.in'] = 4;
         }
         console.log('CONSOLOG: M:isBlockUser & O: query : ', query);
         return this.blockuserService.query(query);

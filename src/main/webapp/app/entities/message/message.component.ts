@@ -267,6 +267,9 @@ export class MessageComponent implements OnInit, OnDestroy {
         this.totalItems = parseInt(headers.get('X-Total-Count'), 10);
         this.queryCount = this.totalItems;
         this.messages = data;
+        console.log('CONSOLOG: M:paginateFollows & O: this.messages : ', this.messages);
+        console.log('CONSOLOG: M:paginateFollows & O: this.owner : ', this.owner);
+        console.log('CONSOLOG: M:paginateFollows & O: this.isAdmin : ', this.isAdmin);
     }
 
     private onError(errorMessage: string) {
