@@ -24,6 +24,7 @@ export class CommunityUpdateComponent implements OnInit {
     community: ICommunity;
     isSaving: boolean;
 
+    user: IUser;
     users: IUser[];
 
     interests: IInterest[];
@@ -51,27 +52,14 @@ export class CommunityUpdateComponent implements OnInit {
             this.community = community;
             this.creationDate = this.community.creationDate != null ? this.community.creationDate.format(DATE_TIME_FORMAT) : null;
         });
-        this.userService.query().subscribe(
-            (res: HttpResponse<IUser[]>) => {
-                this.users = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
-        this.interestService.query().subscribe(
-            (res: HttpResponse<IInterest[]>) => {
-                this.interests = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
-        this.activityService.query().subscribe(
-            (res: HttpResponse<IActivity[]>) => {
-                this.activities = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
-        this.celebService.query().subscribe(
-            (res: HttpResponse<ICeleb[]>) => {
-                this.celebs = res.body;
+        this.myUser();
+    }
+
+    private myUser() {
+        this.userService.findById(this.community.userId).subscribe(
+            (res: HttpResponse<IUser>) => {
+                this.user = res.body;
+                console.log('CONSOLOG: M:ngOnInit & O: this.user : ', this.user);
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
