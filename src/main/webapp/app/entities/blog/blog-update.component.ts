@@ -68,6 +68,7 @@ export class BlogUpdateComponent implements OnInit {
     save() {
         this.isSaving = true;
         this.blog.creationDate = this.creationDate != null ? moment(this.creationDate, DATE_TIME_FORMAT) : null;
+        console.log('CONSOLOG: M:save & O: this.blog : ', this.blog);
         if (this.blog.id !== undefined) {
             this.subscribeToSaveResponse(this.blogService.update(this.blog));
         } else {

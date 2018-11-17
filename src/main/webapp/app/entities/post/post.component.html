@@ -47,14 +47,14 @@
 	                            <fa-icon [icon]="'eye'"></fa-icon>
 	                            <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
 	                        </button>
-	                        <button *ngIf="owner === post.profileUserId || isAdmin == true"
+	                        <button *ngIf="owner === post.userId || isAdmin == true"
 	                        		type="submit"
 	                                [routerLink]="['/post', post.id, 'edit']"
 	                                class="btn btn-primary btn-sm">
 	                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
 	                            <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
 	                        </button>
-	                        <button *ngIf="owner === post.profileUserId || isAdmin == true"
+	                        <button *ngIf="owner === post.userId || isAdmin == true"
 	                        		type="submit"
 	                                [routerLink]="['/', { outlets: { popup: 'post/'+ post.id + '/delete'} }]"
 	                                replaceUrl="true"
