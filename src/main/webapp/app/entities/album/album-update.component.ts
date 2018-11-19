@@ -65,7 +65,7 @@ export class AlbumUpdateComponent implements OnInit {
     private myUser() {
         this.userService.findById(this.currentAccount.id).subscribe(
             (res: HttpResponse<IUser>) => {
-                this.user = res.body;
+                this.album.userId = res.body.id;
                 console.log('CONSOLOG: M:ngOnInit & O: this.user : ', this.user);
             },
             (res: HttpErrorResponse) => this.onError(res.message)

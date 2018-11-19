@@ -34,6 +34,7 @@ export class BlogDetailComponent implements OnInit, OnDestroy {
     predicate: any = 'id';
     previousPage: any = 0;
     reverse: any = 'asc';
+    id: any;
 
     constructor(
         private postService: PostService,
@@ -59,10 +60,13 @@ export class BlogDetailComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        // this.loadAll();
         this.activatedRoute.data.subscribe(({ blog }) => {
             this.blog = blog;
-            this.communitiesPosts(blog);
+            this.id = this.blog.id;
+            //            this.communitiesPosts(blog);
             console.log('CONSOLOG: M:ngOnInit & O: this.blog : ', this.blog);
+            this.loadAll();
         });
         this.registerChangeInPosts();
     }
@@ -80,6 +84,7 @@ export class BlogDetailComponent implements OnInit, OnDestroy {
             (res: HttpResponse<IPost[]>) => {
                 this.posts = res.body;
                 console.log('CONSOLOG: M:communitiesPosts & O: this.posts : ', this.posts);
+                this.paginatePosts(res.body, res.headers);
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
@@ -97,6 +102,22 @@ export class BlogDetailComponent implements OnInit, OnDestroy {
     }
 
     loadAll() {
+        const query = {
+            page: this.page - 1,
+            size: this.itemsPerPage,
+            sort: this.sort()
+        };
+        if (this.blog != null) {
+            query['blogId.equals'] = this.blog.id;
+        }
+        this.postService.query(query).subscribe(
+            (res: HttpResponse<IPost[]>) => {
+                this.posts = res.body;
+                console.log('CONSOLOG: M:communitiesPosts & O: this.posts : ', this.posts);
+                this.paginatePosts(res.body, res.headers);
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
         //        if (this.currentSearch) {
         //            this.postService
         //                .search({
@@ -111,16 +132,16 @@ export class BlogDetailComponent implements OnInit, OnDestroy {
         //                );
         //            return;
         //        }
-        this.postService
-            .query({
-                page: this.page - 1,
-                size: this.itemsPerPage,
-                sort: this.sort()
-            })
-            .subscribe(
-                (res: HttpResponse<IPost[]>) => this.paginatePosts(res.body, res.headers),
-                (res: HttpErrorResponse) => this.onError(res.message)
-            );
+        //        this.postService
+        //            .query({
+        //                page: this.page - 1,
+        //                size: this.itemsPerPage,
+        //                sort: this.sort()
+        //            })
+        //            .subscribe(
+        //                (res: HttpResponse<IPost[]>) => this.paginatePosts(res.body, res.headers),
+        //                (res: HttpErrorResponse) => this.onError(res.message)
+        //            );
     }
 
     loadPage(page: number) {
@@ -131,7 +152,7 @@ export class BlogDetailComponent implements OnInit, OnDestroy {
     }
 
     transition() {
-        this.router.navigate(['/post'], {
+        this.router.navigate(['/blog/', this.id, '/view'], {
             queryParams: {
                 page: this.page,
                 size: this.itemsPerPage,
@@ -146,7 +167,9 @@ export class BlogDetailComponent implements OnInit, OnDestroy {
         this.page = 0;
         //        this.currentSearch = '';
         this.router.navigate([
-            '/post',
+            '/blog/',
+            this.id,
+            '/view',
             {
                 page: this.page,
                 sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
@@ -193,6 +216,7 @@ export class BlogDetailComponent implements OnInit, OnDestroy {
     }
 
     private paginatePosts(data: IPost[], headers: HttpHeaders) {
+        console.log('!!!!!!!!!!!!!', data, headers);
         this.links = this.parseLinks.parse(headers.get('link'));
         this.totalItems = parseInt(headers.get('X-Total-Count'), 10);
         this.queryCount = this.totalItems;
@@ -200,6 +224,7 @@ export class BlogDetailComponent implements OnInit, OnDestroy {
     }
 
     private onError(errorMessage: string) {
+        console.log('!!!!!!!!!****', errorMessage);
         this.jhiAlertService.error(errorMessage, null, null);
     }
 }

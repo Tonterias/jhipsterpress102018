@@ -26,7 +26,7 @@ export class MessageUpdateComponent implements OnInit {
     private _message: IMessage;
     isSaving: boolean;
 
-    users: IUser[];
+    users: IUser[] = [];
     user: IUser;
 
     communities: ICommunity[];
@@ -66,6 +66,10 @@ export class MessageUpdateComponent implements OnInit {
     }
 
     ngOnInit() {
+        //        setInterval(() => {
+        //            this.onWarning('BLOCKED BY USER');
+        //            }, 5000);
+        this.onWarning('BLOCKED BY USER');
         this.isSaving = false;
         this.activatedRoute.data.subscribe(({ message }) => {
             this.message = message;
@@ -135,6 +139,7 @@ export class MessageUpdateComponent implements OnInit {
         this.communityService.query(query).subscribe(
             (res: HttpResponse<ICommunity[]>) => {
                 this.communities = res.body;
+                console.log('CONSOLOG: M:myMessagesCommunities & O: this.communities : ', this.communities);
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
@@ -142,10 +147,10 @@ export class MessageUpdateComponent implements OnInit {
 
     private myUser() {
         //        this.userService.findById(this.valueParamFollows).subscribe(
-        this.userService.findById(4).subscribe(
+        this.userService.findById(this.currentAccount.id).subscribe(
             (res: HttpResponse<IUser>) => {
-                this.user = res.body;
-                console.log('CONSOLOG: M:ngOnInit & O: this.user : ', this.user);
+                this.users.push(res.body);
+                console.log('CONSOLOG: M:ngOnInit & O: this.users : ', this.users);
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
@@ -183,7 +188,7 @@ export class MessageUpdateComponent implements OnInit {
         if (this.currentAccount.id != null) {
             query['blockeduserId.in'] = this.loggedUser.id;
             //            query['blockinguserId.in'] = Number(this.valueParamFollows);
-            query['blockinguserId.in'] = 4;
+            query['blockinguserId.in'] = this.currentAccount.id;
         }
         console.log('CONSOLOG: M:isBlockUser & O: query : ', query);
         return this.blockuserService.query(query);
@@ -210,7 +215,7 @@ export class MessageUpdateComponent implements OnInit {
     private onWarning(errorMessage: string) {
         console.log('CONSOLOG: M:onWarning & O:  errorMessage : ', errorMessage);
         //        this.jhiAlertService.addAlert({type: 'warning', msg: errorMessage, timeout: 10000}, null, null);
-        //        this.jhiAlertService.addAlert({type: 'warning', msg: errorMessage, timeout: 10000}, []);
+        //                this.jhiAlertService.addAlert({type: 'warning', msg: errorMessage, timeout: 10000}, []);
         //        this.jhiAlertService.warning('TEST', {type: 'warning', msg: errorMessage});
         //        this.jhiAlertService.warning(errorMessage, null, null);
         //        this.jhiAlertService.addAlert(this.jhiAlertService.warning(errorMessage, null, null));
@@ -218,7 +223,7 @@ export class MessageUpdateComponent implements OnInit {
         //        this.jhiAlertService.addAlert({type: 'warning', msg: errorMessage, timeout: 5000}, []);
         //        this.jhiAlertService.addAlert({type: 'warning', msg: errorMessage, timeout: 5000}, null);
         this.alerts = [];
-        this.jhiAlertService.error(errorMessage, null, null);
+        //        this.jhiAlertService.warning(errorMessage);
         console.log('CONSOLOG: M:onWarning & O:  this.alerts : ', this.alerts);
         this.alerts.push(
             this.jhiAlertService.addAlert(

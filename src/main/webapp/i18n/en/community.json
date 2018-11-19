@@ -4,7 +4,7 @@
             "home": {
                 "title": "Communities",
                 "createLabel": "Create a new Community",
-                "myLabel": "My Activities",
+                "myLabel": "My Communities",
                 "createOrEditLabel": "Create or edit a Community",
                 "search": "Search for Community"
             },

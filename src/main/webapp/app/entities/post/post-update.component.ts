@@ -28,7 +28,7 @@ export class PostUpdateComponent implements OnInit {
     private _post: IPost;
     isSaving: boolean;
 
-    users: IUser[];
+    users: IUser[] = [];
     user: IUser;
 
     blogs: IBlog[];
@@ -153,7 +153,7 @@ export class PostUpdateComponent implements OnInit {
     private myUser() {
         this.userService.findById(this.post.userId).subscribe(
             (res: HttpResponse<IUser>) => {
-                this.user = res.body;
+                this.users.push(res.body);
                 console.log('CONSOLOG: M:ngOnInit & O: this.user : ', this.user);
             },
             (res: HttpErrorResponse) => this.onError(res.message)
