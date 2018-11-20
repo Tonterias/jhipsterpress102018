@@ -1,6 +1,6 @@
 <div>
     <h2 id="page-heading">
-        <span jhiTranslate="jhipsterpressApp.blockeduser.home.title">Blockusers</span>
+        <span jhiTranslate="jhipsterpressApp.blockuser.home.titleBlockedusers">Blockusers</span>
         <!--
         <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-blockuser" [routerLink]="['/blockuser/new']">
             <fa-icon [icon]="'plus'"></fa-icon>
@@ -25,18 +25,18 @@
 	          <a *ngIf="blockuser.cblockeduserImage" [routerLink]="['/community', blockuser.cblockeduserId, 'view' ]">
                   <img class="g-width-100 g-height-100 rounded-circle g-mb-20" [src]="'data:' + blockuser.cblockeduserImageContentType + ';base64,' + blockuser.cblockeduserImage" alt="image"/>
               </a>
-              <a *ngIf="blockuser.blockeduserImage" [routerLink]="['/profile', blockuser.blockeduserId, 'view' ]">
+              <a *ngIf="blockuser.blockeduserImage" [routerLink]="['/uprofile', blockuser.blockeduserId, 'view' ]">
                   <img class="g-width-100 g-height-100 rounded-circle g-mb-20" [src]="'data:' + blockuser.blockeduserImageContentType + ';base64,' + blockuser.blockeduserImage" alt="image"/>
               </a>
 	          <!-- Figure Image -->
 	
 	          <!-- Figure Info -->
 
-			  <a *ngIf="blockuser.cblockeduserImage" [routerLink]="['/community', blockuser.cblockeduserId, 'view' ]">
-	          	<h4 class="h5 g-mb-5">{{blockuser.cblockeduserCommunityname}}</h4>
+			  <a *ngIf="blockuser.cblockeduserId" [routerLink]="['/community', blockuser.cblockeduserId, 'view' ]">
+	          	<h4 class="h5 g-mb-5">{{blockuser.id}} {{blockuser.cblockeduserCommunityname}}</h4>
 	          </a>
-	          <a *ngIf="blockuser.blockeduserImage" [routerLink]="['/profile', blockuser.blockeduserId, 'view' ]">
-	          	<h4 class="h5 g-mb-5">{{blockuser.blockeduserUserFirstName}} {{blockuser.blockeduserUserLastName}}</h4>
+	          <a *ngIf="blockuser.blockeduserId" [routerLink]="['/uprofile', blockuser.blockeduserId, 'view' ]">
+	          	<h4 class="h5 g-mb-5">{{blockuser.id}} {{blockuser.blockeduserUserFirstName}} {{blockuser.blockeduserUserLastName}}</h4>
 	          </a>
 	          
 	          <!--
