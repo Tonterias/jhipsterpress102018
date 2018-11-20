@@ -84,7 +84,7 @@ export class CommunityDetailComponent implements OnInit {
         this.communityCelebs();
         this.principal.identity().then(account => {
             this.currentAccount = account;
-            this.currentLoggedProfile();
+            this.isFollower();
         });
         this.isSaving = false;
         this.follow = new Object();
@@ -99,16 +99,6 @@ export class CommunityDetailComponent implements OnInit {
             (res: HttpResponse<IBlog[]>) => {
                 this.blogs = res.body;
                 console.log('CONSOLOG: M:communitiesBlogs & O: this.blogs : ', this.blogs);
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
-    }
-
-    private currentLoggedProfile() {
-        this.uprofileService.find(this.currentAccount.id).subscribe(
-            (res: HttpResponse<IUprofile>) => {
-                this.loggedProfile = res.body;
-                this.isFollower();
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
@@ -154,12 +144,13 @@ export class CommunityDetailComponent implements OnInit {
         this.isFollowing = false;
         const query = {};
         if (this.currentAccount.id != null) {
-            query['followedId.in'] = this.loggedProfileId;
+            query['followedId.in'] = this.currentAccount.id;
             query['cfollowingId.in'] = this.community.id;
         }
         this.followService.query(query).subscribe(
             (res: HttpResponse<IFollow[]>) => {
                 this.follows = res.body;
+                console.log('CONSOLOG: M:isFollower & O: this.follows : ', this.follows);
                 if (this.follows.length > 0) {
                     this.isFollowing = true;
                     return this.follows[0];
@@ -173,7 +164,7 @@ export class CommunityDetailComponent implements OnInit {
     following() {
         this.isSaving = true;
         this.follow.creationDate = moment(this.creationDate, DATE_TIME_FORMAT);
-        this.follow.followedId = this.loggedProfileId;
+        this.follow.followedId = this.currentAccount.id;
         this.follow.cfollowingId = this.community.id;
         if (this.isFollowing === false) {
             console.log('CONSOLOG: M:following & O: this.follow : ', this.follow);
@@ -181,7 +172,7 @@ export class CommunityDetailComponent implements OnInit {
             this.notificationReason = 'FOLLOWING';
             this.createNotification(this.notificationReason);
             this.isFollowing = true;
-            //            this.reload();
+            this.reload();
         }
     }
 
@@ -193,7 +184,7 @@ export class CommunityDetailComponent implements OnInit {
                 this.notificationReason = 'UNFOLLOWING';
                 this.createNotification(this.notificationReason);
             });
-            //            this.reload();
+            this.reload();
         }
     }
 
@@ -246,7 +237,7 @@ export class CommunityDetailComponent implements OnInit {
     }
 
     reload() {
-        //        window.location.reload();
+        window.location.reload();
     }
 
     private onError(errorMessage: string) {
