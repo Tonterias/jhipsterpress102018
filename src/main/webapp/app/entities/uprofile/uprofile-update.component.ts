@@ -10,6 +10,8 @@ import { IUprofile } from 'app/shared/model/uprofile.model';
 import { UprofileService } from './uprofile.service';
 import { IUser, UserService } from 'app/core';
 
+import { Principal } from 'app/core';
+
 @Component({
     selector: 'jhi-uprofile-update',
     templateUrl: './uprofile-update.component.html'
@@ -22,6 +24,7 @@ export class UprofileUpdateComponent implements OnInit {
     user: IUser;
     creationDate: string;
     birthdate: string;
+    currentAccount: any;
 
     constructor(
         private dataUtils: JhiDataUtils,
@@ -29,6 +32,7 @@ export class UprofileUpdateComponent implements OnInit {
         private uprofileService: UprofileService,
         private userService: UserService,
         private elementRef: ElementRef,
+        private principal: Principal,
         private activatedRoute: ActivatedRoute
     ) {}
 
@@ -36,15 +40,20 @@ export class UprofileUpdateComponent implements OnInit {
         this.isSaving = false;
         this.activatedRoute.data.subscribe(({ uprofile }) => {
             this.uprofile = uprofile;
+            console.log('CONSOLOG: M:ngOnInit & O: this.uprofile : ', this.uprofile);
             this.creationDate = this.uprofile.creationDate != null ? this.uprofile.creationDate.format(DATE_TIME_FORMAT) : null;
             this.birthdate = this.uprofile.birthdate != null ? this.uprofile.birthdate.format(DATE_TIME_FORMAT) : null;
-            this.userService.findById(this.uprofile.id).subscribe(
-                (res: HttpResponse<IUser>) => {
-                    this.uprofile.userId = res.body.id;
-                    console.log('CONSOLOG: M:ngOnInit & O: this.user : ', this.user);
-                },
-                (res: HttpErrorResponse) => this.onError(res.message)
-            );
+            this.principal.identity().then(account => {
+                this.currentAccount = account;
+                console.log('CONSOLOG: M:ngOnInit & O: this.currentAccount : ', this.currentAccount);
+                this.userService.findById(this.currentAccount.id).subscribe(
+                    (res: HttpResponse<IUser>) => {
+                        this.uprofile.userId = res.body.id;
+                        console.log('CONSOLOG: M:ngOnInit & O: this.user : ', this.user);
+                    },
+                    (res: HttpErrorResponse) => this.onError(res.message)
+                );
+            });
         });
     }
 

@@ -1,13 +1,13 @@
 <div>
     <h2 id="page-heading">
         <span jhiTranslate="jhipsterpressApp.interest.home.title">Interests</span>
-        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-interest" (click)="myInterests()">
+        <button style="margin:5px;" id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-interest" (click)="myInterests()">
             <fa-icon [icon]="'plus'"></fa-icon>
             <span  jhiTranslate="jhipsterpressApp.interest.home.myLabel">
             My Interests
             </span>
         </button>
-        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-interest" [routerLink]="['/interest/new']">
+        <button style="margin:5px;" id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-interest" [routerLink]="['/interest/new']">
             <fa-icon [icon]="'plus'"></fa-icon>
             <span class="hidden-sm-down"  jhiTranslate="jhipsterpressApp.interest.home.createLabel">
             Create new Interest

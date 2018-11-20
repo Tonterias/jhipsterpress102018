@@ -1,14 +1,14 @@
 <div>
     <h2 id="page-heading" >
     	<span jhiTranslate="jhipsterpressApp.activity.home.title">Activities</span>
-        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-activity" 
+        <button style="margin:5px;" id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-activity" 
         (click)="myActivities()">
             <fa-icon [icon]="'plus'"></fa-icon>
             <span  jhiTranslate="jhipsterpressApp.activity.home.myLabel">
             My Activities
             </span>
         </button>
-        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-activity" [routerLink]="['/activity/new']">
+        <button style="margin:5px;" id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-activity" [routerLink]="['/activity/new']">
             <fa-icon [icon]="'plus'"></fa-icon>
             <span class="hidden-sm-down"  jhiTranslate="jhipsterpressApp.activity.home.createLabel">
             Create new Activity

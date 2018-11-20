@@ -39,6 +39,7 @@ export class PostUpdateComponent implements OnInit {
 
     communities: ICommunity[];
 
+    loggeUserdId: number;
     creationDate: string;
     publicationDate: string;
     currentAccount: any;
@@ -66,10 +67,12 @@ export class PostUpdateComponent implements OnInit {
             this.creationDate = this.post.creationDate != null ? this.post.creationDate.format(DATE_TIME_FORMAT) : null;
             this.publicationDate = this.post.publicationDate != null ? this.post.publicationDate.format(DATE_TIME_FORMAT) : null;
         });
-        this.myUser();
         this.principal.identity().then(account => {
             this.currentAccount = account;
+            this.loggeUserdId = this.currentAccount.id;
+            console.log('CONSOLOG: M:ngOnInit & O: this.currentAccount : ', this.currentAccount);
             this.myCommunities(this.currentAccount);
+            this.myUser();
         });
         this.tagService.query().subscribe(
             (res: HttpResponse<ITag[]>) => {
@@ -129,7 +132,6 @@ export class PostUpdateComponent implements OnInit {
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
-        console.log('CONSOLOG: M:myCommunities & O: this.currentAccount.id : ', this.currentAccount.id);
     }
 
     private communitiesBlogs(communities) {
@@ -151,13 +153,24 @@ export class PostUpdateComponent implements OnInit {
     }
 
     private myUser() {
-        this.userService.findById(this.post.userId).subscribe(
-            (res: HttpResponse<IUser>) => {
-                this.users.push(res.body);
-                console.log('CONSOLOG: M:ngOnInit & O: this.user : ', this.user);
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
+        console.log('CONSOLOG: M:myUser & ENTRANDO A MY USER!!!!!!!!!!!!! : ', this.post.userId);
+        if (typeof this.post.userId === 'undefined' || this.loggeUserdId === null) {
+            this.userService.findById(this.loggeUserdId).subscribe(
+                (res: HttpResponse<IUser>) => {
+                    this.users.push(res.body);
+                    console.log('CONSOLOG: M:myUser & O: this.user : ', this.user);
+                },
+                (res: HttpErrorResponse) => this.onError(res.message)
+            );
+        } else {
+            this.userService.findById(this.post.userId).subscribe(
+                (res: HttpResponse<IUser>) => {
+                    this.users.push(res.body);
+                    console.log('CONSOLOG: M:myUser & O: this.user : ', this.user);
+                },
+                (res: HttpErrorResponse) => this.onError(res.message)
+            );
+        }
     }
 
     private subscribeToSaveResponse(result: Observable<HttpResponse<IPost>>) {

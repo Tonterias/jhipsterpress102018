@@ -1,13 +1,13 @@
 <div>
     <h2 id="page-heading">
         <span jhiTranslate="jhipsterpressApp.celeb.home.title">Celebs</span>
-        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-celeb" (click)="myCelebs()">
+        <button style="margin:5px;" id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-celeb" (click)="myCelebs()">
             <fa-icon [icon]="'plus'"></fa-icon>
             <span  jhiTranslate="jhipsterpressApp.celeb.home.myLabel">
             Create new Celeb
             </span>
         </button>
-        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-celeb" [routerLink]="['/celeb/new']">
+        <button style="margin:5px;" id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-celeb" [routerLink]="['/celeb/new']">
             <fa-icon [icon]="'plus'"></fa-icon>
             <span class="hidden-sm-down"  jhiTranslate="jhipsterpressApp.celeb.home.createLabel">
             Create new Celeb
