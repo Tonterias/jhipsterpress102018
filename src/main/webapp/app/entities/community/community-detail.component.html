@@ -53,10 +53,12 @@
 							[routerLink]="['/interest']">
 							<fa-icon [icon]="'plus'"></fa-icon>
 						</button>
-						<strong class="g-mr-5">Interests:</strong> <span
-							*ngFor="let interest of interests"> <a
-							class="u-tags-v1 g-font-size-12 g-brd-around g-brd-gray-light-v4 g-bg-primary--hover g-brd-primary--hover g-color-black-opacity-0_8 g-color-white--hover rounded g-py-6 g-px-15 g-mr-5"
+						<strong class="g-mr-5">Interests:</strong> 
+						<span *ngFor="let interest of interests"> 
+							<a class="u-tags-v1 g-font-size-12 g-brd-around g-brd-gray-light-v4 g-bg-primary--hover g-brd-primary--hover g-color-black-opacity-0_8 g-color-white--hover rounded g-py-6 g-px-15 g-mr-5"
 							href="#!">{{interest.interestName}}</a>
+							<!-- TOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO -->
+				        	<a [routerLink]="['/interest', interest.id, 'delete']" [queryParams]="{ 'communityId': community.id }">-</a>
 						</span>
 					</h6>
 				</div>
@@ -72,7 +74,10 @@
 				        </button>
 				    <strong class="g-mr-5">Activities:</strong>
 				    <span  *ngFor="let activity of activities">
-				        <a class="u-tags-v1 g-font-size-12 g-brd-around g-brd-gray-light-v4 g-bg-primary--hover g-brd-primary--hover g-color-black-opacity-0_8 g-color-white--hover rounded g-py-6 g-px-15 g-mr-5" href="#!">{{activity.activityName}}</a>
+				        <a class="u-tags-v1 g-font-size-12 g-brd-around g-brd-gray-light-v4 g-bg-primary--hover g-brd-primary--hover g-color-black-opacity-0_8 g-color-white--hover rounded g-py-6 g-px-15 g-mr-5" 
+				        href="#!">{{activity.activityName}}</a>
+				        <!-- TOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO -->
+				        <a [routerLink]="['/activity-update']" [queryParams]="{ 'communityIdEquals': community.id }">-</a>
 				    </span>
 				  </h6>
 				</div>
@@ -88,7 +93,10 @@
 				        </button>
 				    <strong class="g-mr-5">Celebs:</strong>
 				    <span  *ngFor="let celeb of celebs">
-				        <a class="u-tags-v1 g-font-size-12 g-brd-around g-brd-gray-light-v4 g-bg-primary--hover g-brd-primary--hover g-color-black-opacity-0_8 g-color-white--hover rounded g-py-6 g-px-15 g-mr-5" href="#!">{{celeb.celebName}}</a>
+				        <a class="u-tags-v1 g-font-size-12 g-brd-around g-brd-gray-light-v4 g-bg-primary--hover g-brd-primary--hover g-color-black-opacity-0_8 g-color-white--hover rounded g-py-6 g-px-15 g-mr-5" 
+				        href="#!">{{celeb.celebName}}</a>
+				        <!-- TOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO -->
+				        <a [routerLink]="['/celeb-update']" [queryParams]="{ 'communityIdEquals': community.id }">-</a>
 				    </span>
 				  </h6>
 				</div>

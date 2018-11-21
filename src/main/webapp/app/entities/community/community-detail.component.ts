@@ -188,6 +188,10 @@ export class CommunityDetailComponent implements OnInit {
         }
     }
 
+    deleteItemFromList() {
+        console.log('CONSOLOG: M:deleteItemFromList : ');
+    }
+
     private createNotification(notificationReason) {
         this.notification = new Object();
         console.log('CONSOLOG: M:createNotification & O: this.notification : ', this.notification);
